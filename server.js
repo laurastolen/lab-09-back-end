@@ -109,6 +109,30 @@ function weatherHandler(request, response) {
     });
 }
 
+// events route --------------
+app.get('/events', eventHandler);
+
+function Event(obj) {
+  this.link = obj.url;
+  this.name = obj.title;
+  // eslint-disable-next-line camelcase
+  this.event_date = obj.start_time;
+  this.summary = obj.description;
+}
+
+function eventHandler(request, response) {
+  let url = `http://api.eventful.com/json/events/search?location=${request.query.data.city}&app_key=${process.env.EVENTFUL_API_KEY}`;
+
+  superagent.get(url)
+    .then(results => {
+      let rawEventsArr = JSON.parse(results.text).events.event;
+      const finalEventsArr = rawEventsArr.map(value => new Event(value));
+      response.send(finalEventsArr);
+    })
+    .catch(error => console.error(error));
+}
+
+
 // page not found route
 app.get('*', (request, response) => {
   response.status(404);
