@@ -60,6 +60,7 @@ function locationHandler(request, response) {
             const geoData = data.body;
             let latitude = geoData.results[0].geometry.location.lat;
             let longitude = geoData.results[0].geometry.location.lng;
+            console.log(geoData);
 
             const locationObj = new Location(city, geoData);
             let sql = 'INSERT INTO location (city, latitude, longitude) VALUES ($1, $2, $3);';
@@ -96,7 +97,7 @@ function weatherHandler(request, response) {
 
   superagent.get(url)
     .then(data => {
-      const weatherData = data.body.daily.data.map(value => {
+      let weatherData = data.body.daily.data.map(value => {
         let weatherSummary = new Weather(value.summary, value.time);
         weatherSummary.save();
 
@@ -132,8 +133,65 @@ function eventHandler(request, response) {
     .catch(error => console.error(error));
 }
 
+// movies route --------------
+app.get('/movies', movieHandler);
 
-// page not found route
+function Movie(obj) {
+  this.title = obj.title;
+  this.overview = obj.overview;
+  // eslint-disable-next-line camelcase
+  this.average_votes = obj.vote_average;
+  // eslint-disable-next-line camelcase
+  this.total_votes = obj.vote_count;
+  // eslint-disable-next-line camelcase
+  this.image_url = `https://image.tmdb.org/t/p/w500${obj.poster_path}`;
+  this.popularity = obj.popularity;
+  // eslint-disable-next-line camelcase
+  this.released_on = obj.release_date;
+}
+
+function movieHandler(request, response) {
+  let url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIE_API_KEY}&query=${request.query.data.city}`;
+
+  superagent.get(url)
+    .then(results => {
+      let rawArray = results.body.results;
+      let finalMovieArray = rawArray.slice(0, 20).map(movie => {
+        let newMovie = new Movie(movie);
+        return newMovie;
+      });
+
+      response.send(finalMovieArray);
+    })
+    .catch(error => console.error(error));
+}
+
+// yelp route--------------------
+app.get('/yelp', yelpHandler);
+
+function Yelp(obj) {
+  this.name = obj.name;
+  // eslint-disable-next-line camelcase
+  this.image_url = obj.image_url;
+  this.price = obj.price;
+  this.rating = obj.rating;
+  this.url = obj.url;
+}
+
+function yelpHandler(request, response) {
+
+
+  let url = `https://api.yelp.com/v3/businesses/search?latitude=${request.query.data.latitude}&longitude=${request.query.data.longitude}`;
+  superagent.get(`${url}`).set('Authorization', `Bearer ${process.env.YELP_API_KEY}`)
+    .then(yelpResults => {
+      let rawYelpArr = yelpResults.body.businesses;
+      let finalYelpArr = rawYelpArr.slice(0, 20).map(value => new Yelp(value));
+      response.send(finalYelpArr);
+    })
+    .catch(error => console.error(error));
+}
+
+// page not found route----------------------
 app.get('*', (request, response) => {
   response.status(404);
 });
