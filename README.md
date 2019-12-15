@@ -23,6 +23,7 @@ In order to run this app, a user needs to have node.js installed. Required libra
 01-01-2001 4:59pm - Application now has a fully-functional express server, with a GET route for the location resource. -->
 12/12 - location and weather routes functioning to return Google and Dark Skies API info
 12/13 - postgres db functioning to retain unique location names and latitude/longitudes
+12/14 - all APIs functioning
 
 ## Credits and Collaborations
 <!-- Give credit (and a link) to other people or resources that helped you build this application. -->
@@ -58,6 +59,7 @@ Start time: 11:40
 Finish time: 1:15
 
 Actual time needed to complete: 1.5 hours
+
 ### day two
 Number and name of feature: Data Formatting
 
@@ -75,29 +77,6 @@ Estimate of time needed to complete: 1 hour
 
 Start time: 10:10
 
-Finish time: _____
-
-Actual time needed to complete: _____
-
-Number and name of feature: Weather
-
-Estimate of time needed to complete: 1.5 hours
-
-Start time: _____
-
-Finish time: _____
-
-Actual time needed to complete: _____
-
-Number and name of feature: Eventbrite
-
-Estimate of time needed to complete: 1.5 hours
-
-Start time: _____
-
-Finish time: _____
-
-Actual time needed to complete: _____
 ### day three
 Number and name of feature: ______
 
